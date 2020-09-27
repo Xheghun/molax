@@ -29,11 +29,59 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:moolax/business_logic/view_models/choose_favorites_viewmodel.dart';
+import 'package:moolax/services/service_locator.dart';
+import 'package:provider/provider.dart';
 
-class ChooseFavoriteCurrencyScreen extends StatelessWidget {
+class ChooseFavoriteCurrencyScreen extends StatefulWidget {
+
+  @override
+  _ChooseFavoriteCurrencyScreenState createState() => _ChooseFavoriteCurrencyScreenState();
+}
+
+class _ChooseFavoriteCurrencyScreenState extends State<ChooseFavoriteCurrencyScreen> {
+
+  ChooseFavoritesViewModel model = serviceLocator<ChooseFavoritesViewModel>();
+
+
+  @override
+  void initState() {
+    model.loadData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Choose Currencies'),
+      ),
+      body: buildListView(model),
+    );
+  }
+
+  buildListView(ChooseFavoritesViewModel viewModel) {
+    return ChangeNotifierProvider(
+      create: (context) => viewModel,
+      child: Consumer<ChooseFavoritesViewModel>(
+        builder: (context,model,widget) => ListView.builder(
+          itemCount: model.choices.length,
+          itemBuilder: (context,index) {
+            FavoritePresentation presentation = model.choices[index];
+            return Card(
+              child: ListTile(
+                onTap:() => model.toggleFavoriteStatus(index),
+                leading: SizedBox(
+                  width: 60,
+                  child: Text(presentation.flag,style: TextStyle(fontSize: 30),),
+                ),
+                subtitle: Text(presentation.alphabeticCode),
+                trailing: presentation.isFavorite ? Icon(Icons.favorite,color: Colors.red,) : Icon(Icons.favorite_border,),
+              ),
+            );
+          },
+        ),
+      )
+    );
   }
 }

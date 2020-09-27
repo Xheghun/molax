@@ -29,7 +29,10 @@
  */
 
 import 'package:get_it/get_it.dart';
+import 'package:moolax/services/currency/currency_service_implementation.dart';
+import 'package:moolax/services/web_api/web_api.dart';
 import 'package:moolax/services/web_api/web_api_fake.dart';
+import 'package:moolax/services/web_api/web_api_impl.dart';
 import 'currency/currency_service.dart';
 import 'currency/currency_service_fake.dart';
 import 'storage/storage_service.dart';
@@ -42,8 +45,8 @@ GetIt serviceLocator = GetIt.instance;
 void setupServiceLocator() {
   serviceLocator
     ..registerLazySingleton<StorageService>(() => StorageServiceImpl())
-    ..registerLazySingleton<CurrencyService>(() => CurrencyServiceFake())
-    ..registerLazySingleton(() => FakeWebApi());
+    ..registerLazySingleton<CurrencyService>(() => CurrencyServiceImpl())
+    ..registerLazySingleton<WebApi>(() => WebApiImpl());
 
   serviceLocator
     ..registerFactory<CalculateScreenViewModel>(
